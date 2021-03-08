@@ -8,19 +8,127 @@
     <title>Tic Tac Toe</title>
 </head>
 <body>
-    <header>Tic Tac Toe</header>
+    <header>
+        <h1>Tic Tac Toe</h1>
+        <div id="pX" class="players">Gracz X: </div>
+        <div id="pO" class="players">Gracz O: </div>
+    </header>
     <main>
         <section>
-            <div class="pole"></div>
-            <div class="pole"></div>
-            <div class="pole"></div>
-            <div class="pole"></div>
-            <div class="pole"></div>
-            <div class="pole"></div>
-            <div class="pole"></div>
-            <div class="pole"></div>
-            <div class="pole"></div>
+            <div class="field"></div>
+            <div class="field"></div>
+            <div class="field"></div>
+            <div class="field"></div>
+            <div class="field"></div>
+            <div class="field"></div>
+            <div class="field"></div>
+            <div class="field"></div>
+            <div class="field"></div>
         </section>
     </main>
+    <div id="popUp">
+        <div id="nicks">
+            <h3>Imiona graczy:</h3>
+            <p>Gracz X:</p>
+            <input type="text" id="nickX">
+            <p>Gracz O:</p>
+            <input type="text" id="nickO"><br>
+            <input type="button" value="Zacznij grę" id="start">
+        </div>
+    </div>
+    <script>
+        const fields = document.querySelectorAll(".field");
+        const nickX = document.querySelector("#nickX");
+        const nickO = document.querySelector("#nickO");
+        let counter = 0;
+        let flags = [];
+        for (let i = 0; i < 9; i++) {
+            flags[i] = 0;
+        }
+
+        //funkcja sprawdzająca zwycięzcę
+        function tryWin() {
+            if (counter%2==0) {
+                for (let i = 0; i < 3; i++) {
+                    if (flags[i]==1&&flags[i+3]==1&&flags[i+6]==1) {
+                        win(1);
+                    }
+                    if (flags[i*3]==1&&flags[i*3+1]==1&&flags[i*3+2]==1) {
+                        win(1);
+                    }
+                }
+                if (flags[0]==1&&flags[4]==1&&flags[8]==1) {
+                        win(1);
+                }
+                if (flags[2]==1&&flags[4]==1&&flags[6]==1) {
+                        win(1);
+                }
+            }
+            else {
+                for (let i = 0; i < 3; i++) {
+                    if (flags[i]==2&&flags[i+3]==2&&flags[i+6]==2) {
+                        win(2);
+                    }
+                    if (flags[i*3]==2&&flags[i*3+1]==2&&flags[i*3+2]==2) {
+                        win(2);
+                    }
+                }
+                if (flags[0]==2&&flags[4]==2&&flags[8]==2) {
+                        win(2);
+                }
+                if (flags[2]==2&&flags[4]==2&&flags[6]==2) {
+                        win(2);
+                }
+            }
+        }
+
+        function win(winner) {
+            alert(`Wygrał ${winner}`);
+            console.log(flags);
+        }
+
+        //wybór nicków dla graczy
+        document.querySelector("#start").addEventListener("click",function() {
+            document.querySelector("#pX").innerText = "Gracz X: " + nickX.value;
+            document.querySelector("#pO").innerText = "Gracz O: " + nickO.value;
+            document.querySelector("#popUp").remove();
+        });
+
+        //funkcje pól gry
+        for (let i = 0; i < fields.length; i++) {
+            fields[i].addEventListener("mouseover",function() {
+                if (flags[i]==0) {
+                    this.style.backgroundColor = "#fad674";
+                    if (counter%2==0) {
+                        this.innerText = "X";
+                    }
+                    else {
+                        this.innerText = "O";
+                    }
+                }
+            });
+            fields[i].addEventListener("mouseout",function() {
+                if (flags[i]==0) {
+                    this.style.backgroundColor = "#faf174";
+                    this.innerText = "";
+                }
+            });
+            fields[i].addEventListener("click",function() {
+                if (flags[i]==0) {
+                    if (counter%2==0) {
+                        this.innerText = "X";
+                        flags[i] = 1;
+                    }
+                    else {
+                        this.innerText = "O";
+                        flags[i] = 2;
+                    }
+                    this.style.backgroundColor = "#faf174";
+                    tryWin();
+                    counter++;
+                }
+            });
+        }
+    </script>
 </body>
 </html>
