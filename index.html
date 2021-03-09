@@ -26,75 +26,120 @@
             <div class="field"></div>
         </section>
     </main>
+    <footer>
+        <input type="button" value="Rozpocznij następną grę" id="resetMidGame">
+    </footer>
     <div id="popUp">
-        <div id="nicks">
-            <h3>Imiona graczy:</h3>
-            <p>Gracz X:</p>
-            <input type="text" id="nickX">
-            <p>Gracz O:</p>
-            <input type="text" id="nickO"><br>
-            <input type="button" value="Zacznij grę" id="start">
-        </div>
     </div>
     <script>
         const fields = document.querySelectorAll(".field");
-        const nickX = document.querySelector("#nickX");
-        const nickO = document.querySelector("#nickO");
+        const popUpBack = document.querySelector("#popUp");
         let counter = 0;
+        let gameCounter = 0;
         let flags = [];
         for (let i = 0; i < 9; i++) {
             flags[i] = 0;
         }
+        const winDiv = document.createElement("div");
+        const resetEndGame = document.createElement("input");
+        resetEndGame.value = "Rozpocznij następną grę";
+        resetEndGame.type = "button";
+        //zapytanie o imiona graczy
+        const nicks = document.createElement("div");
+        nicks.id = "nicks";
+        const nickXP = document.createElement("p");
+        nickXP.innerText = "Gracz X:";
+        const nickX = document.createElement("input");
+        nickX.type = "text";
+        nickX.id = "nickX";
+        const nickOP = document.createElement("p");
+        nickOP.innerText = "Gracz O:";
+        const nickO = document.createElement("input");
+        nickO.type = "text";
+        nickO.id = "nickO";
+        const start = document.createElement("input");
+        start.type = "button";
+        start.id = "start";
+        start.value = "Zacznij grę";
+        popUpBack.appendChild(nicks);
+        nicks.appendChild(nickXP);
+        nicks.appendChild(nickX);
+        nicks.appendChild(nickOP);
+        nicks.appendChild(nickO);
+        nicks.appendChild(document.createElement("br"));
+        nicks.appendChild(start);
 
         //funkcja sprawdzająca zwycięzcę
         function tryWin() {
+            let w;
             if (counter%2==0) {
-                for (let i = 0; i < 3; i++) {
-                    if (flags[i]==1&&flags[i+3]==1&&flags[i+6]==1) {
-                        win(1);
-                    }
-                    if (flags[i*3]==1&&flags[i*3+1]==1&&flags[i*3+2]==1) {
-                        win(1);
-                    }
-                }
-                if (flags[0]==1&&flags[4]==1&&flags[8]==1) {
-                        win(1);
-                }
-                if (flags[2]==1&&flags[4]==1&&flags[6]==1) {
-                        win(1);
-                }
+                w = 1;
             }
             else {
-                for (let i = 0; i < 3; i++) {
-                    if (flags[i]==2&&flags[i+3]==2&&flags[i+6]==2) {
-                        win(2);
-                    }
-                    if (flags[i*3]==2&&flags[i*3+1]==2&&flags[i*3+2]==2) {
-                        win(2);
-                    }
+                w = 2;
+            }
+            for (let i = 0; i < 3; i++) {
+                if (flags[i]==w&&flags[i+3]==w&&flags[i+6]==w) {
+                    win(w);
                 }
-                if (flags[0]==2&&flags[4]==2&&flags[8]==2) {
-                        win(2);
+                if (flags[i*3]==w&&flags[i*3+1]==w&&flags[i*3+2]==w) {
+                    win(w);
                 }
-                if (flags[2]==2&&flags[4]==2&&flags[6]==2) {
-                        win(2);
-                }
+            }
+            if (flags[0]==w&&flags[4]==w&&flags[8]==w) {
+                win(w);
+            }
+            if (flags[2]==w&&flags[4]==w&&flags[6]==w) {
+                win(w);
             }
         }
 
+        //wiadomość o wygranej
         function win(winner) {
-            alert(`Wygrał ${winner}`);
-            console.log(flags);
+            if (winner==1) {
+                winDiv.innerText = `Wygrywa: ${nickX.value}`;
+            }
+            else {
+                winDiv.innerText = `Wygrywa: ${nickO.value}`;
+            }
+            popUpBack.style.display = "flex";
+            popUpBack.appendChild(winDiv);
+            winDiv.appendChild(document.createElement("br"));
+            winDiv.appendChild(resetEndGame);
         }
 
+        //funkcja resetująca grę
+        function newGame() {
+            gameCounter++;
+            if (gameCounter%2==0) {
+                counter = 0;
+            }
+            else {
+                counter = 1;
+            }
+            for (let i = 0; i < fields.length; i++) {
+                fields[i].innerText = "";
+                flags[i] = 0;
+            }
+        }
+
+        //restart gry
+        document.querySelector("#resetMidGame").addEventListener("click", newGame);
+        resetEndGame.addEventListener("click", function () {
+            winDiv.remove();
+            popUpBack.style.display = "none";
+            newGame();
+        })
+
         //wybór nicków dla graczy
-        document.querySelector("#start").addEventListener("click",function() {
+        start.addEventListener("click",function() {
             document.querySelector("#pX").innerText = "Gracz X: " + nickX.value;
             document.querySelector("#pO").innerText = "Gracz O: " + nickO.value;
-            document.querySelector("#popUp").remove();
+            popUpBack.style.display = "none";
+            nicks.remove();
         });
 
-        //funkcje pól gry
+        //działanie pól gry
         for (let i = 0; i < fields.length; i++) {
             fields[i].addEventListener("mouseover",function() {
                 if (flags[i]==0) {

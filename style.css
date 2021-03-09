@@ -51,10 +51,13 @@ section{
     justify-content: center;
     align-items: center;
 }
-#nicks{
+#popUp div{
     min-width: 30vw;
     height: fit-content;
     padding: 2%;
     border:  #fa9e13 solid 5px;
     background-color: #faf174;
+}
+#resetMidGame{
+    margin: 3vh;
 }
